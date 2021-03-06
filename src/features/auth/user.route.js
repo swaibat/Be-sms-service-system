@@ -1,7 +1,6 @@
 import express from "express";
 import User from "./user.modal";
 import bcrypt from "bcrypt";
-var jwt = require("jwt-simple");
 
 const router = express.Router();
 
@@ -47,29 +46,20 @@ router.post("/", (req, res) => {
 });
 
 router.post("/login", (req, res) => {
-  var payload = { foo: "bar", email:'rswaiib@gmaiil.com', email:'rswaiib@gmaiil.com' };
-  var secret = "xxx";
-
-  // encode
-  var token = jwt.encode(payload, secret);
-console.log(token)
-  // decode
-  var decoded = jwt.decode(token, secret);
-  console.log(decoded);
-  //   User.findOne({ email: req.body.email }, (err, user) => {
-  //     if (err) {
-  //       return res.status(400).send({ message: "Create user failed", err });
-  //     }
-  //     bcrypt.compare(req.body.password, user.password, (error, result) => {
-  //       if (result) {
-  //         res.status(200).send({
-  //           status: 200,
-  //           data: user,
-  //         });
-  //       }
-  //       return res.status(400).send({ message: "wrong login details", error });
-  //     });
-  //   });
+    User.findOne({ email: req.body.email }, (err, user) => {
+      if (err) {
+        return res.status(400).send({ message: "Create user failed", err });
+      }
+      bcrypt.compare(req.body.password, user.password, (error, result) => {
+        if (result) {
+          res.status(200).send({
+            status: 200,
+            data: user,
+          });
+        }
+        return res.status(400).send({ message: "wrong login details", error });
+      });
+    });
 });
 
 export default router;
