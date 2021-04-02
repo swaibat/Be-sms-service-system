@@ -1,6 +1,7 @@
 import express from "express";
 import User from "./user.modal";
 import bcrypt from "bcrypt";
+import UserController from "./user.controller";
 
 const router = express.Router();
 
@@ -45,21 +46,6 @@ router.post("/", (req, res) => {
   });
 });
 
-router.post("/login", (req, res) => {
-    User.findOne({ email: req.body.email }, (err, user) => {
-      if (err) {
-        return res.status(400).send({ message: "Create user failed", err });
-      }
-      bcrypt.compare(req.body.password, user.password, (error, result) => {
-        if (result) {
-          res.status(200).send({
-            status: 200,
-            data: user,
-          });
-        }
-        return res.status(400).send({ message: "wrong login details", error });
-      });
-    });
-});
+router.post("/login", UserController.login);
 
 export default router;
