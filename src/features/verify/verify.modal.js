@@ -1,36 +1,39 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const verifySchema = new mongoose.Schema(
+const OtpSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      unique: true,
-      required: true,
-    },
-    exp_time: {
+    profileName: {
       type: String,
       required: true,
     },
-    otp_len: {
+    userId: {
       type: String,
       required: true,
     },
-    msisdn: {
+    msg: {
       type: String,
       required: true,
     },
-    verify_token: {
+    expiry: {
       type: String,
       required: true,
     },
-    user_id: {
-        type: String,
-        required: true,
-      },
+    senderName: {
+      type: String,
+      required: true,
+    },
+    otplen: {
+      type: Number,
+      required: true,
+    },
+    serviceToken: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-const Verify = mongoose.model("Verify", verifySchema);
+const Otp = mongoose.model('Otp', OtpSchema);
 
-export default Verify;
+export default Otp;
