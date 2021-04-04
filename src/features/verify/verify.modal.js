@@ -15,7 +15,7 @@ const OtpSchema = new mongoose.Schema(
       required: true,
     },
     expiry: {
-      type: String,
+      type: Number,
       required: true,
     },
     senderName: {
@@ -29,6 +29,10 @@ const OtpSchema = new mongoose.Schema(
     serviceToken: {
       type: String,
       required: true,
+    },
+    active: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

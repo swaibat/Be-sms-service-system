@@ -11,7 +11,7 @@ router.post('/', (req, res) => {
       message: 'make sure {code} exists in your message template',
     });
   }
-  req.body.msg = req.body.msg.replace('{code}', '%m');
+  req.body.msg = encodeURI(req.body.msg.replace('{code}', '%m'));
   req.body.userId = req.user._id;
   console.log('req.user', req.body);
   Verify.create(req.body, (err, verifyData) => {
@@ -36,6 +36,42 @@ router.get('/', (req, res) => {
     });
   });
 });
+
+router
+  .route('/:id')
+  .delete((req, res) => {
+    Verify.find(
+      { userId: req.user._id, _id: req.params.id },
+      (err, verifyData) => {
+        if (err) {
+          return res
+            .status(400)
+            .send({ message: 'profile creation failed', err });
+        }
+        return res.status(200).send({
+          status: 200,
+          data: verifyData,
+        });
+      }
+    );
+  })
+  .patch((req, res) => {
+    Verify.updateOne(
+      { userId: req.user._id, _id: req.params.id },
+      { ...req.body },
+      (err, verifyData) => {
+        if (err) {
+          return res
+            .status(400)
+            .send({ message: 'profile creation failed', err });
+        }
+        return res.status(200).send({
+          status: 200,
+          data: verifyData,
+        });
+      }
+    );
+  });
 
 router.get('/user/:id', (req, res) => {
   Verify.find({}, (err, profiles) => {
