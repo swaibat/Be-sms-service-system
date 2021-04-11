@@ -1,16 +1,19 @@
-import Response from '../utils/response';
-import Otp from '../features/verify/verify.modal';
-import Router from '../config';
+import Response from '../../utils/response';
+import Otp from '../../features/verify/verify.modal';
+import Router from '../../config';
 import { verifyErrorsHelper, errorsHelper } from './otp.util';
+import jwt from 'jsonwebtoken';
 
 const optMiddleware = {
   generateOtp: async (req, res) => {
+    // encode
+    var token = jwt.sign({ username: 'rumbiiha', firstname: 'rumbiiha' }, 'shhhhh');
+    console.log(token);
     const { expiry, otplen, senderName, msg } = req.service;
     const { msisdn } = req.params;
     const response = await Router.get(
       `/OtpApi/otpgenerate?msisdn=${msisdn}&otplen=${otplen}&exptime=${expiry}&source=${senderName}&msg=${msg}`
     );
-    console.log(response.data);
     if (errorsHelper(response.data)) {
       return res.status(422).send(errorsHelper(response.data));
     }
@@ -24,10 +27,6 @@ const optMiddleware = {
         },
       });
     }
-    return res.status(422).send({
-      status: 422,
-      message: 'message cant be processed!',
-    });
   },
 
   verifyOtp: async (req, res) => {

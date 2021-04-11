@@ -66,6 +66,10 @@ export const errorsHelper = (data) => {
       status: 1028,
       message: 'Spam message.',
     };
+  return {
+    status: 422,
+    message: 'message cant be processed!',
+  };
 };
 
 export const verifyErrorsHelper = (data) => {

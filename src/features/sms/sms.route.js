@@ -1,20 +1,11 @@
 import express from 'express';
-import Verify from './verify.modal';
-import User from '../auth/user.modal';
+import Sms from './sms.modal';
 
 const router = express.Router();
 
 router.post('/', (req, res) => {
-  if (!req.body.msg || !req.body.msg.match('{code}')) {
-    return res.status(400).send({
-      status: 400,
-      message: 'make sure {code} exists in your message template',
-    });
-  }
-  req.body.msg = encodeURI(req.body.msg.replace('{code}', '%m'));
   req.body.userId = req.user._id;
-  console.log('req.user', req.body);
-  Verify.create(req.body, (err, verifyData) => {
+  Sms.create(req.body, (err, verifyData) => {
     if (err) {
       return res.status(400).send({ message: 'profile creation failed', err });
     }
@@ -26,13 +17,13 @@ router.post('/', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-  Verify.find({ userId: req.user._id }, (err, verifyData) => {
+  Sms.find({ userId: req.user._id }, (err, smsData) => {
     if (err) {
       return res.status(400).send({ message: 'profile creation failed', err });
     }
     return res.status(200).send({
       status: 200,
-      data: verifyData,
+      data: smsData,
     });
   });
 });
@@ -40,7 +31,7 @@ router.get('/', (req, res) => {
 router
   .route('/:id')
   .delete((req, res) => {
-    Verify.remove(
+    Sms.remove(
       { userId: req.user._id, _id: req.params.id },
       (err, { deletedCount }) => {
         if (!deletedCount) {
@@ -57,10 +48,11 @@ router
     );
   })
   .patch((req, res) => {
-    Verify.updateOne(
+    Sms.updateOne(
       { userId: req.user._id, _id: req.params.id },
       { ...req.body },
       (err, { nModified }) => {
+        console.log(nModified);
         if (!nModified) {
           return res.status(404).send({
             status: 404,
@@ -76,7 +68,7 @@ router
   });
 
 router.get('/user/:id', (req, res) => {
-  Verify.find({}, (err, profiles) => {
+  Sms.find({}, (err, profiles) => {
     if (err) {
       res.status(400).send({ message: 'Create user failed', err });
     }
