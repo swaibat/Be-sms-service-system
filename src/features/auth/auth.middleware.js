@@ -20,14 +20,12 @@ const authMiddleware = {
   },
 
   getServiceTokenDetails: async (req, res, next) => {
-    Verify.findOne(
-      { serviceToken: req.query.keys },
-      (err, service) => {
-        if (err) return Response({ message: 'user does not exist', err });
-        req.service = service;
-        return next();
-      }
-    );
+    Verify.findOne({ serviceToken: req.query.keys }, (err, service) => {
+      if (err) return Response(res, 422, 'something went wrong');
+      if (!service) return Response(res, 404, 'Invalid service keys');
+      req.service = service;
+      return next();
+    });
   },
 };
 
